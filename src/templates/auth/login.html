@@ -1,0 +1,69 @@
+{% extends './base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block body %}
+
+<script>
+    function updateTiempoRestante() {
+        const tiempoRestanteElement = document.getElementById("tiempo_restante");
+        let tiempoRestante = parseInt(tiempoRestanteElement.innerText);
+        
+        if (tiempoRestante > 0) {
+            tiempoRestante -= 1;
+            tiempoRestanteElement.innerText = tiempoRestante;
+        } else {
+            location.reload();
+        }
+    }
+    
+    // Actualiza el tiempo restante cada segundo
+    setInterval(updateTiempoRestante, 1000);
+</script>
+
+<form class="form-signin" action="/login" method="POST">
+    <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="160" height="100">
+    {% with messages = get_flashed_messages() %}
+
+    {% if messages %}
+    <br />
+    {% for message in messages %}
+    <div class="alert alert-primary alert-dismissible" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% endwith %}
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-floating">
+        <input type="text" class="form-control" id="username" name="username" placeholder="Username" autocomplete="username">
+        <label for="username">Username</label>
+    </div>
+    <div class="form-floating mt-2">
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+        <label for="password">Password</label>
+    </div>
+
+    {% if context.mensaje | length > 1 %}
+        <div class="alert alert-{{context.type}} alert-dismissible fade show">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{context.mensaje}}
+        </div>
+    {% endif %}
+
+    {% if tiempo_restante > 0 %}
+    <p> Acceso denegado. IP bloqueada temporalmente. Tiempo restante: <span id="tiempo_restante">{{ tiempo_restante }}</span> segundos. </p>
+    <button id="login_button" class="w-100 btn btn-lg btn-primary" type="submit" disabled>Sign in</button>
+{% else %}
+    <button id="login_button" class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+{% endif %}
+</form>
+{% endblock %}
+

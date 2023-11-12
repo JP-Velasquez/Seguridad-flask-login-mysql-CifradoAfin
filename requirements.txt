@@ -1,5 +1,6 @@
+python==3.11.6
 pip==23.2.1
-﻿asttokens==2.4.0
+asttokens==2.4.0
 backcall==0.2.0
 blinker==1.6.2
 click==8.1.6
